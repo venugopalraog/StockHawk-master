@@ -25,7 +25,6 @@ import timber.log.Timber;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import yahoofinance.histquotes.HistoricalQuote;
-import yahoofinance.histquotes.Interval;
 import yahoofinance.quotes.stock.StockQuote;
 
 public final class QuoteSyncJob {
@@ -84,7 +83,7 @@ public final class QuoteSyncJob {
 
                     // WARNING! Don't request historical data for a stock that doesn't exist!
                     // The request will hang forever X_x
-                    List<HistoricalQuote> history = stock.getHistory(from, to, Interval.WEEKLY);
+                    List<HistoricalQuote> history = stock.getHistory();
 
                     StringBuilder historyBuilder = new StringBuilder();
 
