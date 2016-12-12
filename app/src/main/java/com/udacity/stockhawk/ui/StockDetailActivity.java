@@ -19,7 +19,7 @@ public class StockDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         if (savedInstanceState == null) {
-            String stockName = getIntent().getParcelableExtra(Constants.STOCK_DATA);
+            String stockName = getIntent().getParcelableExtra(Constants.STOCK_SYMBOL);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.stock_detail_container, StockDetailFragment.newInstance(stockName), StockDetailFragment.class.getSimpleName())
                     .commit();

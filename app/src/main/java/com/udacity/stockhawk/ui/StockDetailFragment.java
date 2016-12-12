@@ -7,13 +7,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -99,6 +106,30 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
         cursor.close();
 
         Timber.d("History Data:: %s", history);
+        updateLineChart(history);
+    }
+
+    private void updateLineChart(String history) {
+        if (history == null) return;
+
+        String[] historyArray =  TextUtils.split(history, "\n");
+
+        List<Entry> entries = new ArrayList<Entry>();
+
+
+        for (String string : historyArray) {
+            Timber.d("History Data :: " + string);
+            String[] entryData = TextUtils.split(string, ", ");
+            entries.add(new Entry(Float.valueOf(entryData[1]), Integer.valueOf(entryData[0])));
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, "Label");
+        LineData lineData = new LineData();
+        lineData.addDataSet(dataSet);
+
+        mLineChart.setData(lineData);
+        mLineChart.invalidate();
+
     }
 
     @Override
