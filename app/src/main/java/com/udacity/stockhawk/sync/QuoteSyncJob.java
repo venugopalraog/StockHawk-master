@@ -75,12 +75,10 @@ public final class QuoteSyncJob {
 
                     StockQuote quote = stock.getQuote();
 
-                    /* Check if Stock quote price is null */
                     if (quote.getPrice() == null) continue;
-
-                    float price = quote.getPrice().floatValue();
+                    /*float price = quote.getPrice().floatValue();
                     float change = quote.getChange().floatValue();
-                    float percentChange = quote.getChangeInPercent().floatValue();
+                    float percentChange = quote.getChangeInPercent().floatValue();*/
 
                     // WARNING! Don't request historical data for a stock that doesn't exist!
                     // The request will hang forever X_x
@@ -96,12 +94,18 @@ public final class QuoteSyncJob {
                     }
 
                     ContentValues quoteCV = new ContentValues();
+
                     quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
-                    quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
-                    quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
-                    quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-
-
+                    quoteCV.put(Contract.Quote.COLUMN_PRICE,  quote.getPrice() != null ? quote.getPrice().floatValue() : 0);
+                    quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, quote.getChangeInPercent() != null ? quote.getChangeInPercent().floatValue() : 0);
+                    quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, quote.getChange() != null ? quote.getChange().floatValue() : 0);
+                    quoteCV.put(Contract.Quote.COLUMN_ASK, quote.getAsk() != null ? quote.getAsk().floatValue() : 0);
+                    quoteCV.put(Contract.Quote.COLUMN_ASK_SIZE, quote.getAskSize());
+                    quoteCV.put(Contract.Quote.COLUMN_BID, quote.getBid() != null ? quote.getBid().floatValue() : 0);
+                    quoteCV.put(Contract.Quote.COLUMN_BID_SIZE, quote.getBidSize());
+                    quoteCV.put(Contract.Quote.COLUMN_LAST_TRADE_SIZE, quote.getLastTradeSize());
+                    quoteCV.put(Contract.Quote.COLUMN_LAST_TRADE_DATE_STR, quote.getLastTradeDateStr());
+                    quoteCV.put(Contract.Quote.COLUMN_LAST_TRADE_TIME_STR, quote.getLastTradeTimeStr());
                     quoteCV.put(Contract.Quote.COLUMN_HISTORY, historyBuilder.toString());
 
                     quoteCVs.add(quoteCV);

@@ -214,5 +214,6 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
 
     public interface onListItemClicked {
         void onItemClicked(String symbol);
+        void onRefresDetailView(String symbol);
     }
 }

@@ -7,20 +7,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.udacity.stockhawk.R;
+import com.udacity.stockhawk.common.Constants;
+import com.udacity.stockhawk.common.LineChartUIHelper;
+import com.udacity.stockhawk.common.StockDetailsConverter;
 import com.udacity.stockhawk.data.Contract;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.udacity.stockhawk.model.DetailViewModel;
+import com.udacity.stockhawk.model.StockDetailsModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,9 +34,15 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
     private static final int STOCK_DETAIL_LOADER = 1;
 
     private String mStockSymbol;
+    private StockDetailsModel mStockDetailModel;
+    private StockDetailAdapter mAdapter;
+
 
     @BindView(R.id.stock_detail_chart)
     LineChart mLineChart;
+
+    @BindView(R.id.stock_detail_container)
+    LinearLayout mStockDetailContainer;
 
 
     public static StockDetailFragment newInstance(String stockSymbol) {
@@ -56,6 +62,10 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
         if (getArguments() != null) {
             this.mStockSymbol = getArguments().getString(Constants.STOCK_SYMBOL);
         }
+        if (mStockSymbol != null) {
+            getLoaderManager().initLoader(STOCK_DETAIL_LOADER, null, this);
+            this.mAdapter = new StockDetailAdapter(getActivity());
+        }
     }
 
     @Nullable
@@ -65,28 +75,57 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
         setRetainInstance(true);
         setHasOptionsMenu(true);
         ButterKnife.bind(this, view);
-
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            mStockDetailModel = savedInstanceState.getParcelable(Constants.STOCK_DETAIL_DATA);
+            mStockSymbol = savedInstanceState.getString(Constants.STOCK_SYMBOL);
+        }
         loadScreenData();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(Constants.STOCK_DETAIL_DATA, mStockDetailModel);
+        outState.putString(Constants.STOCK_SYMBOL, mStockSymbol);
+        super.onSaveInstanceState(outState);
+    }
+
     private void loadScreenData() {
-        if (mStockSymbol != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.STOCK_SYMBOL, mStockSymbol);
-            getLoaderManager().initLoader(STOCK_DETAIL_LOADER, bundle, this);
+        if (mStockDetailModel != null && mStockSymbol != null) {
+            mStockDetailContainer.setVisibility(View.VISIBLE);
+            mLineChart.setVisibility(View.VISIBLE);
+            LineChartUIHelper.initLineChart(mStockDetailModel.getStockHistory(), mLineChart);
+
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+
+            for (DetailViewModel viewModel : mStockDetailModel.getDetailsList()) {
+                View itemView = inflater.inflate(R.layout.list_item_stock_detail, mStockDetailContainer, false);
+                TextView title = (TextView) itemView.findViewById(R.id.title);
+                title.setText(viewModel.getTitle());
+                TextView value = (TextView) itemView.findViewById(R.id.value);
+                value.setText(viewModel.getValue());
+
+                mStockDetailContainer.addView(itemView);
+            }
+
+            /*
+            mStockDetailContainer.setAdapter(mAdapter);
+            mAdapter.setViewModelList(mStockDetailModel.getDetailsList());
+            mStockDetailContainer.setLayoutManager(new LinearLayoutManager(getActivity()));*/
+        } else {
+            mStockDetailContainer.setVisibility(View.GONE);
+            mLineChart.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String selection = Contract.Quote.COLUMN_SYMBOL + "=?";
-        String[] selectionArgs = { bundle.getString(Constants.STOCK_SYMBOL) };
+        String[] selectionArgs = { mStockSymbol };
 
         return new CursorLoader(getActivity(),
                 Contract.Quote.uri,
@@ -99,41 +138,13 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         Timber.d("Cursor Data Length: %d", cursor.getCount());
-        String history = null;
-        while (cursor.moveToNext()) {
-            history = cursor.getString(cursor.getColumnIndex(Contract.Quote.COLUMN_HISTORY));
-        }
-        cursor.close();
-
-        Timber.d("History Data:: %s", history);
-        updateLineChart(history);
-    }
-
-    private void updateLineChart(String history) {
-        if (history == null) return;
-
-        String[] historyArray =  TextUtils.split(history, "\n");
-
-        List<Entry> entries = new ArrayList<Entry>();
-
-
-        for (String string : historyArray) {
-            Timber.d("History Data :: " + string);
-            String[] entryData = TextUtils.split(string, ", ");
-            entries.add(new Entry(Float.valueOf(entryData[1]), Integer.valueOf(entryData[0])));
-        }
-
-        LineDataSet dataSet = new LineDataSet(entries, "Label");
-        LineData lineData = new LineData();
-        lineData.addDataSet(dataSet);
-
-        mLineChart.setData(lineData);
-        mLineChart.invalidate();
-
+        mStockDetailModel = StockDetailsConverter.convertStockDetail(cursor);
+        loadScreenData();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Timber.d("onLoaderReset");
     }
+
 }

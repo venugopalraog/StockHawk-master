@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.udacity.stockhawk.R;
+import com.udacity.stockhawk.common.Constants;
 
 import butterknife.ButterKnife;
 
@@ -52,6 +53,15 @@ public class MainActivity extends AppCompatActivity implements StockListFragment
             Intent detailsIntent = new Intent(this, StockDetailActivity.class);
             detailsIntent.putExtra(Constants.STOCK_SYMBOL, symbol);
             startActivity(detailsIntent);
+        }
+    }
+
+    @Override
+    public void onRefresDetailView(String symbol) {
+        if (mTwoPane) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.stock_detail_container, StockDetailFragment.newInstance(symbol), StockDetailFragment.class.getSimpleName())
+                    .commit();
         }
     }
 }

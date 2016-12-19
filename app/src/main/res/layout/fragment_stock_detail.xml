@@ -1,12 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/stock_detail_chart"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:background="@color/material_white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/chart_containter"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@color/material_grey_100"
+            android:elevation="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:rotation="-90"
+                android:text="Price"
+                android:textColor="@color/primary_text"/>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/stock_detail_chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="Months"
+                android:textColor="@color/primary_text"/>
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/stock_detail_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/material_grey_400"
+            android:elevation="10dp"
+            android:orientation="vertical"/>
+
+    </LinearLayout>
+
+</ScrollView>
