@@ -20,7 +20,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
+class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.StockViewHolder> {
 
     final private Context context;
     final private DecimalFormat dollarFormatWithPlus;
@@ -29,7 +29,7 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
     private Cursor cursor;
     private StockAdapterOnClickHandler clickHandler;
 
-    StockAdapter(Context context, StockAdapterOnClickHandler clickHandler) {
+    StockListAdapter(Context context, StockAdapterOnClickHandler clickHandler) {
         this.context = context;
         this.clickHandler = clickHandler;
 
@@ -63,22 +63,17 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
     @Override
     public void onBindViewHolder(StockViewHolder holder, int position) {
-
         cursor.moveToPosition(position);
-
 
         holder.symbol.setText(cursor.getString(Contract.Quote.POSITION_SYMBOL));
         holder.price.setText(dollarFormat.format(cursor.getFloat(Contract.Quote.POSITION_PRICE)));
 
+        holder.symbol.setContentDescription(context.getString(R.string.stock_symbol)+ holder.symbol.getText());
+        holder.price.setContentDescription(context.getString(R.string.sotck_price)+ holder.price.getText());
+
 
         float rawAbsoluteChange = cursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
         float percentageChange = cursor.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
-
-        if (rawAbsoluteChange > 0) {
-            holder.change.setBackgroundResource(R.drawable.percent_change_pill_green);
-        } else {
-            holder.change.setBackgroundResource(R.drawable.percent_change_pill_red);
-        }
 
         String change = dollarFormatWithPlus.format(rawAbsoluteChange);
         String percentage = percentageFormat.format(percentageChange / 100);
@@ -90,6 +85,13 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
             holder.change.setText(percentage);
         }
 
+        if (rawAbsoluteChange > 0) {
+            holder.change.setBackgroundResource(R.drawable.percent_change_pill_green);
+            holder.change.setContentDescription(context.getString(R.string.up_by_string) + holder.change.getText());
+        } else {
+            holder.change.setBackgroundResource(R.drawable.percent_change_pill_red);
+            holder.change.setContentDescription(context.getString(R.string.down_by_string) + holder.change.getText());
+        }
 
     }
 

@@ -36,4 +36,18 @@
     <string name="toast_stock_added_no_connectivity">Symbol %s added. Will refresh when network available.</string>
     <string name="toast_no_connectivity">Will refresh when network available.</string>
 
+    <string name="up_by_string">up by</string>
+    <string name="down_by_string">down by</string>
+    <string name="stock_symbol">symbol</string>
+    <string name="sotck_price">price</string>
+
+    <string name="stock_detail_months">Months</string>
+    <string name="stock_detail_price">Price</string>
+    <string name="stock_detail_price_description">Price Axis</string>
+    <string name="stock_detail_months_description">Months Axis</string>
+    <string name="stock_detail_line_chart_description">Stock Chart for two years</string>
+    <string name="title_stock_widget">Stock List</string>
+    <string name="add_stock">Add Stock</string>
+
+
 </resources>

@@ -10,16 +10,14 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.linearlistview.LinearListView;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.common.Constants;
 import com.udacity.stockhawk.common.LineChartUIHelper;
 import com.udacity.stockhawk.common.StockDetailsConverter;
 import com.udacity.stockhawk.data.Contract;
-import com.udacity.stockhawk.model.DetailViewModel;
 import com.udacity.stockhawk.model.StockDetailsModel;
 
 import butterknife.BindView;
@@ -42,7 +40,7 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
     LineChart mLineChart;
 
     @BindView(R.id.stock_detail_container)
-    LinearLayout mStockDetailContainer;
+    LinearListView mStockDetailContainer;
 
 
     public static StockDetailFragment newInstance(String stockSymbol) {
@@ -99,23 +97,9 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
             mStockDetailContainer.setVisibility(View.VISIBLE);
             mLineChart.setVisibility(View.VISIBLE);
             LineChartUIHelper.initLineChart(mStockDetailModel.getStockHistory(), mLineChart);
-
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-
-            for (DetailViewModel viewModel : mStockDetailModel.getDetailsList()) {
-                View itemView = inflater.inflate(R.layout.list_item_stock_detail, mStockDetailContainer, false);
-                TextView title = (TextView) itemView.findViewById(R.id.title);
-                title.setText(viewModel.getTitle());
-                TextView value = (TextView) itemView.findViewById(R.id.value);
-                value.setText(viewModel.getValue());
-
-                mStockDetailContainer.addView(itemView);
-            }
-
-            /*
-            mStockDetailContainer.setAdapter(mAdapter);
             mAdapter.setViewModelList(mStockDetailModel.getDetailsList());
-            mStockDetailContainer.setLayoutManager(new LinearLayoutManager(getActivity()));*/
+            mStockDetailContainer.setAdapter(mAdapter);
+
         } else {
             mStockDetailContainer.setVisibility(View.GONE);
             mLineChart.setVisibility(View.GONE);

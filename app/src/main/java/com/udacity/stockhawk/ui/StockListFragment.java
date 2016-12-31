@@ -37,7 +37,7 @@ import timber.log.Timber;
  */
 
 public class StockListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-                                        StockAdapter.StockAdapterOnClickHandler,
+                                        StockListAdapter.StockAdapterOnClickHandler,
                                         SwipeRefreshLayout.OnRefreshListener {
 
     private static final int STOCK_LOADER = 0;
@@ -49,7 +49,7 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
     @BindView(R.id.error)
     TextView error;
 
-    private StockAdapter adapter;
+    private StockListAdapter adapter;
 
 
     @Nullable
@@ -96,7 +96,7 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
 
 
     private void loadScreenData() {
-        adapter = new StockAdapter(getActivity(), this);
+        adapter = new StockListAdapter(getActivity(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 

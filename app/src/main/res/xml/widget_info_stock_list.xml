@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/stock_list_widget_layout"
+    android:minHeight="146dp"
+    android:minWidth="246dp"
+    android:previewImage="@drawable/ic_percentage"
+    android:resizeMode="vertical|horizontal"/>
