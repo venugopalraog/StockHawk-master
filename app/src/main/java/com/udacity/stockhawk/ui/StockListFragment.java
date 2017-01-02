@@ -1,5 +1,7 @@
 package com.udacity.stockhawk.ui;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -27,6 +29,7 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
+import com.udacity.stockhawk.widgets.StockWidgetProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -118,6 +121,7 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
                 String symbol = adapter.getSymbolAtPosition(viewHolder.getAdapterPosition());
                 PrefUtils.removeStock(getActivity(), symbol);
                 getActivity().getContentResolver().delete(Contract.Quote.makeUriForStock(symbol), null, null);
+                updateStockWidget();
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -195,6 +199,7 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
         if (data.getCount() != 0) {
             error.setVisibility(View.GONE);
         }
+        updateStockWidget();
         adapter.setCursor(data);
     }
 
@@ -210,6 +215,13 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
     public void onClick(String symbol) {
         Timber.d("Symbol clicked: %s", symbol);
         ((MainActivity)getActivity()).onItemClicked(symbol);
+    }
+
+    public void updateStockWidget() {
+        AppWidgetManager man = AppWidgetManager.getInstance(getActivity());
+        int[] ids = man.getAppWidgetIds(
+                new ComponentName(getActivity(), StockWidgetProvider.class));
+        man.notifyAppWidgetViewDataChanged(ids, R.id.listViewWidget);
     }
 
     public interface onListItemClicked {
