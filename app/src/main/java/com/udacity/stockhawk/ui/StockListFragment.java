@@ -201,6 +201,7 @@ public class StockListFragment extends Fragment implements LoaderManager.LoaderC
         }
         updateStockWidget();
         adapter.setCursor(data);
+//        ((MainActivity)getActivity()).onRefresDetailView(adapter.getSymbolAtPosition(0));
     }
 
 

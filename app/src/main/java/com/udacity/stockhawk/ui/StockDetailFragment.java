@@ -39,7 +39,7 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
     @BindView(R.id.stock_detail_chart)
     LineChart mLineChart;
 
-    @BindView(R.id.stock_detail_container)
+    @BindView(R.id.stock_detail_list_view)
     LinearListView mStockDetailContainer;
 
 

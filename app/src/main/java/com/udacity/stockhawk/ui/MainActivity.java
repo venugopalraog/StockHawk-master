@@ -3,6 +3,7 @@ package com.udacity.stockhawk.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.udacity.stockhawk.R;
@@ -19,6 +20,12 @@ public class MainActivity extends AppCompatActivity implements StockListFragment
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
         ButterKnife.bind(this);
 
         if (findViewById(R.id.stock_detail_container) != null) {
